@@ -140,3 +140,8 @@ button {
     color: black;
   }
   
+  @media (max-width: 768px) {
+    .container {
+        padding: 15px;  /* Adjust for smaller screens */
+    }
+}
