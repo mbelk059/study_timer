@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>da ultimate study timer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Schoolbell&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>da ultimate study timer</h1>
+      <input
+        type="number"
+        id="timeInput"
+        min="5"
+        step="5"
+        placeholder="enter minutes"
+      />
+
+      <div class="buttons">
+        <button id="start">start</button>
+        <button id="pause">pause</button>
+        <button id="stop">stop</button>
+      </div>
+
+      <!-- Modal -->
+      <div id="stopModal" class="modal">
+        <div class="modal-content">
+          <p>be so fr u barely even studied.. are u sure u wanna stop now?</p>
+          <button id="confirmStop">yes i'm done..</button>
+          <button id="cancelStop">nevermind.. i'm locking back in</button>
+        </div>
+      </div>
+
+      <div class="timer">
+        <span id="minutes">00</span>:<span id="seconds">00</span>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
