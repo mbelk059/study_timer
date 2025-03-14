@@ -1,1 +1,2 @@
-study timer for my sisters https://daultimatestudytimer.netlify.app/ so they actually study.
+study timer for my sisters so they actually study.
+https://daultimatestudytimer.netlify.app/
