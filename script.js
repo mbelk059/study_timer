@@ -15,6 +15,27 @@ const stopModal = document.getElementById('stopModal');
 const confirmStopButton = document.getElementById('confirmStop');
 const cancelStopButton = document.getElementById('cancelStop');
 
+const backgroundButton = document.getElementById('backgroundButton');
+
+const backgrounds = [
+    './images/chihiro043.png',
+    './images/chihiro014.jpg',
+    './images/totoro041.jpg',
+    './images/totoro025.jpg',
+    './images/ponyo050.jpg',
+    './images/ponyo038.jpg',
+    './images/ponyo006.jpg',
+    './images/howl011.jpg',
+    './images/karigurashi002.jpg',
+];
+
+let currentBackground = 0;
+
+backgroundButton.addEventListener('click', () => {
+    currentBackground = (currentBackground + 1) % backgrounds.length; // Cycle through the images
+    document.body.style.backgroundImage = `url('${backgrounds[currentBackground]}')`;
+});
+
 startButton.addEventListener('click', () => {
     const minutes = parseInt(timeInput.value);
     if (isNaN(minutes) || minutes <= 0) {
