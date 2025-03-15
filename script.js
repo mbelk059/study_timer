@@ -83,19 +83,34 @@ function startTimer() {
             const seconds = totalSeconds % 60;
             updateDisplay(minutes, seconds);
 
-            // Play the alarm at 2 seconds left
+            // Start the alarm at 2 seconds left
             if (totalSeconds === 2 && !alarmPlayed) {
-                alarmSound.currentTime = 0;
-                alarmSound.play().catch(error => console.error('Audio playback failed:', error));
+                playAlarmLoop();
                 alarmPlayed = true;
             }
         } else if (totalSeconds === 0) {
             clearInterval(timer);
             setTimeout(() => {
                 alert("Time's up! Great job!");
-            }, 500); // Optional delay for dramatic effect
+                stopAlarm();
+            }, 500); // Delay to let the sound start first
         }
     }, 1000);
+}
+
+// Loop the alarm sound
+function playAlarmLoop() {
+    alarmSound.loop = true; // Enable looping
+    alarmSound.currentTime = 0;
+    alarmSound.play().catch(error => console.error('Audio playback failed:', error));
+}
+
+// Stop the alarm
+function stopAlarm() {
+    alarmSound.loop = false; // Disable looping
+    alarmSound.pause();
+    alarmSound.currentTime = 0; // Reset audio to the start
+    alarmPlayed = false; // Reset for next use
 }
 
 function updateDisplay(minutes, seconds) {
