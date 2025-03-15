@@ -61,9 +61,12 @@ stopButton.addEventListener('click', () => {
 confirmStopButton.addEventListener('click', () => {
     clearInterval(timer);
     totalSeconds = 0;
+    alarmSound.pause();  // Stop any ongoing alarm sound
+    alarmSound.currentTime = 0; // Reset sound to the start
+    alarmPlayed = false; // Allow alarm to play again next time
     updateDisplay(0, 0);
     pauseButton.textContent = 'pause';
-    stopModal.style.display = 'none'; // Hide the modal
+    stopModal.style.display = 'none';
 });
 
 cancelStopButton.addEventListener('click', () => {
@@ -79,13 +82,18 @@ function startTimer() {
             const minutes = Math.floor(totalSeconds / 60);
             const seconds = totalSeconds % 60;
             updateDisplay(minutes, seconds);
-        } else if (totalSeconds === 0 && !alarmPlayed) {  // Only play alarm if it hasn't been played yet
-            alarmSound.play();
+
+            // Play the alarm at 2 seconds left
+            if (totalSeconds === 2 && !alarmPlayed) {
+                alarmSound.currentTime = 0;
+                alarmSound.play().catch(error => console.error('Audio playback failed:', error));
+                alarmPlayed = true;
+            }
+        } else if (totalSeconds === 0) {
             clearInterval(timer);
-            alarmPlayed = true;  // Set the flag to true after playing the sound // Play sound first
             setTimeout(() => {
-                alert("Time's up! Great job!"); // Show the alert after sound plays
-            }, 500); // Delay alert by 500ms to allow the sound to start before the alert
+                alert("Time's up! Great job!");
+            }, 500); // Optional delay for dramatic effect
         }
     }, 1000);
 }
