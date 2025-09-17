@@ -1,8 +1,7 @@
 let timer;
-let totalSeconds = 0;
+let endTime;
 let isPaused = false;
-let alarmSound = new Audio('./sounds/rj_pasin.mp3');
-let alarmPlayed = false;  // New flag to prevent sound from playing multiple times
+let pausedTime = 0;
 
 const timeInput = document.getElementById('timeInput');
 const startButton = document.getElementById('start');
@@ -32,7 +31,7 @@ const backgrounds = [
 let currentBackground = 0;
 
 backgroundButton.addEventListener('click', () => {
-    currentBackground = (currentBackground + 1) % backgrounds.length; // Cycle through the images
+    currentBackground = (currentBackground + 1) % backgrounds.length;
     document.body.style.backgroundImage = `url('${backgrounds[currentBackground]}')`;
 });
 
@@ -42,28 +41,39 @@ startButton.addEventListener('click', () => {
         alert('Please enter a valid number of minutes.');
         return;
     }
-    totalSeconds = minutes * 60;
+
+    clearInterval(timer);
+    endTime = Date.now() + minutes * 60 * 1000;
     isPaused = false;
-    alarmPlayed = false;  // Reset alarmPlayed flag when starting a new timer
-    startTimer();
+    pausedTime = 0;
+
+    timer = setInterval(updateTimer, 200);
 });
 
 pauseButton.addEventListener('click', () => {
-    isPaused = !isPaused;
-    pauseButton.textContent = isPaused ? 'resume' : 'pause';
+    if (!endTime) return; // ignore if timer never started
+    if (!isPaused) {
+        isPaused = true;
+        pausedTime = endTime - Date.now();
+        clearInterval(timer);
+        pauseButton.textContent = 'resume';
+    } else {
+        isPaused = false;
+        endTime = Date.now() + pausedTime;
+        timer = setInterval(updateTimer, 200);
+        pauseButton.textContent = 'pause';
+    }
 });
 
 stopButton.addEventListener('click', () => {
+    if (!endTime) return;
     isPaused = true;
-    stopModal.style.display = 'flex'; // Show the modal
+    stopModal.style.display = 'flex';
 });
 
 confirmStopButton.addEventListener('click', () => {
     clearInterval(timer);
-    totalSeconds = 0;
-    alarmSound.pause();  // Stop any ongoing alarm sound
-    alarmSound.currentTime = 0; // Reset sound to the start
-    alarmPlayed = false; // Allow alarm to play again next time
+    endTime = null;
     updateDisplay(0, 0);
     pauseButton.textContent = 'pause';
     stopModal.style.display = 'none';
@@ -71,46 +81,30 @@ confirmStopButton.addEventListener('click', () => {
 
 cancelStopButton.addEventListener('click', () => {
     isPaused = false;
-    stopModal.style.display = 'none'; // Hide the modal without stopping
+    if (pausedTime > 0) {
+        endTime = Date.now() + pausedTime;
+        timer = setInterval(updateTimer, 200);
+    }
+    stopModal.style.display = 'none';
 });
 
-function startTimer() {
-    clearInterval(timer);
-    timer = setInterval(() => {
-        if (!isPaused && totalSeconds > 0) {
-            totalSeconds--;
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = totalSeconds % 60;
-            updateDisplay(minutes, seconds);
+function updateTimer() {
+    if (isPaused) return;
 
-            // Start the alarm at 2 seconds left
-            if (totalSeconds === 2 && !alarmPlayed) {
-                playAlarmLoop();
-                alarmPlayed = true;
-            }
-        } else if (totalSeconds === 0) {
-            clearInterval(timer);
-            setTimeout(() => {
-                alert("Time's up! Great job!");
-                stopAlarm();
-            }, 500); // Delay to let the sound start first
-        }
-    }, 1000);
-}
+    const now = Date.now();
+    let remaining = endTime - now;
 
-// Loop the alarm sound
-function playAlarmLoop() {
-    alarmSound.loop = true; // Enable looping
-    alarmSound.currentTime = 0;
-    alarmSound.play().catch(error => console.error('Audio playback failed:', error));
-}
+    if (remaining <= 0) {
+        clearInterval(timer);
+        updateDisplay(0, 0);
+        alert("Time's up! Great job!");
+        return;
+    }
 
-// Stop the alarm
-function stopAlarm() {
-    alarmSound.loop = false; // Disable looping
-    alarmSound.pause();
-    alarmSound.currentTime = 0; // Reset audio to the start
-    alarmPlayed = false; // Reset for next use
+    const minutes = Math.floor(remaining / 60000);
+    const seconds = Math.floor((remaining % 60000) / 1000);
+
+    updateDisplay(minutes, seconds);
 }
 
 function updateDisplay(minutes, seconds) {
