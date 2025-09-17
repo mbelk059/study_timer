@@ -1,8 +1,16 @@
+// Timer variables
 let timer;
 let endTime;
 let isPaused = false;
 let pausedTime = 0;
 
+// Stopwatch variables
+let stopwatchTimer;
+let stopwatchStartTime;
+let stopwatchElapsed = 0;
+let stopwatchPaused = false;
+
+// Timer elements
 const timeInput = document.getElementById('timeInput');
 const startButton = document.getElementById('start');
 const pauseButton = document.getElementById('pause');
@@ -15,6 +23,21 @@ const confirmStopButton = document.getElementById('confirmStop');
 const cancelStopButton = document.getElementById('cancelStop');
 
 const backgroundButton = document.getElementById('backgroundButton');
+
+// Mode toggle elements
+const timerModeBtn = document.getElementById('timerModeBtn');
+const stopwatchModeBtn = document.getElementById('stopwatchModeBtn');
+const timerSection = document.getElementById('timerSection');
+const stopwatchSection = document.getElementById('stopwatchSection');
+
+// Stopwatch elements
+const stopwatchStartButton = document.getElementById('stopwatchStart');
+const stopwatchPauseButton = document.getElementById('stopwatchPause');
+const stopwatchStopButton = document.getElementById('stopwatchStop');
+const stopwatchResetButton = document.getElementById('stopwatchReset');
+const stopwatchMinutesDisplay = document.getElementById('stopwatchMinutes');
+const stopwatchSecondsDisplay = document.getElementById('stopwatchSeconds');
+const stopwatchMsDisplay = document.getElementById('stopwatchMs');
 
 const backgrounds = [
     './images/chihiro043.png',
@@ -30,11 +53,28 @@ const backgrounds = [
 
 let currentBackground = 0;
 
+// Background change functionality
 backgroundButton.addEventListener('click', () => {
     currentBackground = (currentBackground + 1) % backgrounds.length;
     document.body.style.backgroundImage = `url('${backgrounds[currentBackground]}')`;
 });
 
+// Mode toggle functionality
+timerModeBtn.addEventListener('click', () => {
+    timerModeBtn.classList.add('active');
+    stopwatchModeBtn.classList.remove('active');
+    timerSection.classList.add('active');
+    stopwatchSection.classList.remove('active');
+});
+
+stopwatchModeBtn.addEventListener('click', () => {
+    stopwatchModeBtn.classList.add('active');
+    timerModeBtn.classList.remove('active');
+    stopwatchSection.classList.add('active');
+    timerSection.classList.remove('active');
+});
+
+// Timer functionality (original code)
 startButton.addEventListener('click', () => {
     const minutes = parseInt(timeInput.value);
     if (isNaN(minutes) || minutes <= 0) {
@@ -110,4 +150,70 @@ function updateTimer() {
 function updateDisplay(minutes, seconds) {
     minutesDisplay.textContent = minutes.toString().padStart(2, '0');
     secondsDisplay.textContent = seconds.toString().padStart(2, '0');
+}
+
+// Stopwatch functionality
+stopwatchStartButton.addEventListener('click', () => {
+    if (!stopwatchPaused) {
+        stopwatchStartTime = Date.now() - stopwatchElapsed;
+    } else {
+        stopwatchStartTime = Date.now() - stopwatchElapsed;
+        stopwatchPaused = false;
+    }
+    stopwatchTimer = setInterval(updateStopwatch, 10);
+    stopwatchStartButton.textContent = 'running...';
+    stopwatchStartButton.disabled = true;
+});
+
+stopwatchPauseButton.addEventListener('click', () => {
+    if (!stopwatchPaused) {
+        clearInterval(stopwatchTimer);
+        stopwatchPaused = true;
+        stopwatchStartButton.textContent = 'resume';
+        stopwatchStartButton.disabled = false;
+        stopwatchPauseButton.textContent = 'paused';
+    } else {
+        stopwatchStartTime = Date.now() - stopwatchElapsed;
+        stopwatchTimer = setInterval(updateStopwatch, 10);
+        stopwatchPaused = false;
+        stopwatchStartButton.textContent = 'running...';
+        stopwatchStartButton.disabled = true;
+        stopwatchPauseButton.textContent = 'pause';
+    }
+});
+
+stopwatchStopButton.addEventListener('click', () => {
+    clearInterval(stopwatchTimer);
+    stopwatchElapsed = 0;
+    stopwatchPaused = false;
+    updateStopwatchDisplay(0, 0, 0);
+    stopwatchStartButton.textContent = 'start';
+    stopwatchStartButton.disabled = false;
+    stopwatchPauseButton.textContent = 'pause';
+});
+
+stopwatchResetButton.addEventListener('click', () => {
+    clearInterval(stopwatchTimer);
+    stopwatchElapsed = 0;
+    stopwatchPaused = false;
+    updateStopwatchDisplay(0, 0, 0);
+    stopwatchStartButton.textContent = 'start';
+    stopwatchStartButton.disabled = false;
+    stopwatchPauseButton.textContent = 'pause';
+});
+
+function updateStopwatch() {
+    stopwatchElapsed = Date.now() - stopwatchStartTime;
+    
+    const minutes = Math.floor(stopwatchElapsed / 60000);
+    const seconds = Math.floor((stopwatchElapsed % 60000) / 1000);
+    const centiseconds = Math.floor((stopwatchElapsed % 1000) / 10);
+
+    updateStopwatchDisplay(minutes, seconds, centiseconds);
+}
+
+function updateStopwatchDisplay(minutes, seconds, centiseconds) {
+    stopwatchMinutesDisplay.textContent = minutes.toString().padStart(2, '0');
+    stopwatchSecondsDisplay.textContent = seconds.toString().padStart(2, '0');
+    stopwatchMsDisplay.textContent = centiseconds.toString().padStart(2, '0');
 }

@@ -18,31 +18,59 @@
     </button>
     <div class="container">
       <h1>da ultimate study timer</h1>
-      <input
-        type="number"
-        id="timeInput"
-        min="5"
-        step="5"
-        placeholder="enter minutes"
-      />
 
-      <div class="buttons">
-        <button id="start">start</button>
-        <button id="pause">pause</button>
-        <button id="stop">stop</button>
+      <!-- Mode Toggle -->
+      <div class="mode-toggle">
+        <button id="timerModeBtn" class="mode-button active">timer</button>
+        <button id="stopwatchModeBtn" class="mode-button">stopwatch</button>
       </div>
 
-      <!-- Modal -->
-      <div id="stopModal" class="modal">
-        <div class="modal-content">
-          <p>be so fr u barely even studied.. are u sure u wanna stop now?</p>
-          <button id="confirmStop">yes i'm done..</button>
-          <button id="cancelStop">nevermind.. i'm locking back in</button>
+      <!-- Timer Section -->
+      <div id="timerSection" class="timer-section active">
+        <input
+          type="number"
+          id="timeInput"
+          min="5"
+          step="5"
+          placeholder="enter minutes"
+        />
+
+        <div class="buttons">
+          <button id="start">start</button>
+          <button id="pause">pause</button>
+          <button id="stop">stop</button>
+        </div>
+
+        <!-- Modal -->
+        <div id="stopModal" class="modal">
+          <div class="modal-content">
+            <p>be so fr u barely even studied.. are u sure u wanna stop now?</p>
+            <button id="confirmStop">yes i'm done..</button>
+            <button id="cancelStop">nevermind.. i'm locking back in</button>
+          </div>
+        </div>
+
+        <div class="timer">
+          <span id="minutes">00</span>:<span id="seconds">00</span>
         </div>
       </div>
 
-      <div class="timer">
-        <span id="minutes">00</span>:<span id="seconds">00</span>
+      <!-- Stopwatch Section -->
+      <div id="stopwatchSection" class="stopwatch-section">
+        <div class="input-placeholder"></div>
+
+        <div class="buttons">
+          <button id="stopwatchStart">start</button>
+          <button id="stopwatchPause">pause</button>
+          <button id="stopwatchStop">stop</button>
+          <button id="stopwatchReset">reset</button>
+        </div>
+
+        <div class="timer">
+          <span id="stopwatchMinutes">00</span>:<span id="stopwatchSeconds"
+            >00</span
+          >
+        </div>
       </div>
     </div>
 
