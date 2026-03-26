@@ -105,6 +105,10 @@ button {
     transition: background-color 0.3s;
 }
 
+:fullscreen body, ::backdrop {
+    background: none;
+}
+
 #start, #stopwatchStart {
     background-color: #acf28e;
     color: black;

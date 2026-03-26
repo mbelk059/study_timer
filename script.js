@@ -39,6 +39,8 @@ const stopwatchMinutesDisplay = document.getElementById('stopwatchMinutes');
 const stopwatchSecondsDisplay = document.getElementById('stopwatchSeconds');
 const stopwatchMsDisplay = document.getElementById('stopwatchMs');
 
+const fullscreenButton = document.getElementById('fullscreenButton');
+
 const backgrounds = [
     './images/chihiro043.png',
     './images/chihiro014.jpg',
@@ -57,6 +59,12 @@ let currentBackground = 0;
 backgroundButton.addEventListener('click', () => {
     currentBackground = (currentBackground + 1) % backgrounds.length;
     document.body.style.backgroundImage = `url('${backgrounds[currentBackground]}')`;
+});
+
+// Preload all background images
+backgrounds.forEach(src => {
+    const img = new Image();
+    img.src = src;
 });
 
 // Mode toggle functionality
@@ -217,3 +225,19 @@ function updateStopwatchDisplay(minutes, seconds, centiseconds) {
     stopwatchSecondsDisplay.textContent = seconds.toString().padStart(2, '0');
     stopwatchMsDisplay.textContent = centiseconds.toString().padStart(2, '0');
 }
+
+fullscreenButton.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+        fullscreenButton.textContent = 'exit fullscreen';
+    } else {
+        document.exitFullscreen();
+        fullscreenButton.textContent = 'fullscreen';
+    }
+});
+
+document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) {
+        fullscreenButton.textContent = 'fullscreen';
+    }
+});
